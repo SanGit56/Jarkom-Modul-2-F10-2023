@@ -1,0 +1,16 @@
+ping arjuna.f10.com -c 2
+host -t CNAME www.arjuna.f10.com
+ping www.arjuna.f10.com -c 2
+
+ping abimanyu.f10.com -c 2
+host -t CNAME www.abimanyu.f10.com
+ping www.abimanyu.f10.com -c 2
+
+host -t A parikesit.abimanyu.f10.com
+ping parikesit.abimanyu.f10.com -c 2
+
+host -t PTR 192.226.3.3
+
+ping baratayuda.abimanyu.f10.com -c 2
+host -t CNAME www.baratayuda.abimanyu.f10.com
+ping www.baratayuda.abimanyu.f10.com -c 2
