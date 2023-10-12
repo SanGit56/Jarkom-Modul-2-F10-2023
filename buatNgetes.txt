@@ -14,3 +14,9 @@ host -t PTR 192.226.3.3
 ping baratayuda.abimanyu.f10.com -c 2
 host -t CNAME www.baratayuda.abimanyu.f10.com
 ping www.baratayuda.abimanyu.f10.com -c 2
+
+ping rjp.baratayuda.abimanyu.f10.com -c 2
+host -t CNAME www.rjp.baratayuda.abimanyu.f10.com
+ping www.rjp.baratayuda.abimanyu.f10.com -c 2
+
+nginx -t
