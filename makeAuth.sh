@@ -1,10 +1,7 @@
 #!/bin/bash
-cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/rjp.baratayuda.abimanyu.f10.conf
-wget -O '/var/www/rjp.baratayuda.abimanyu.f10.com.zip' 'https://drive.usercontent.google.com/download?id=1pPSP7yIR05JhSFG67RVzgkb-VcW9vQO6'
-unzip /var/www/rjp.baratayuda.abimanyu.f10.com.zip -d /var/www/
-rm -r /var/www/rjp.baratayuda.abimanyu.f10
-mv /var/www/rjp.baratayuda.abimanyu.yyy.com /var/www/rjp.baratayuda.abimanyu.f10
-rm /var/www/rjp.baratayuda.abimanyu.f10.com.zip
+echo "baratayudaf10" | htpasswd -ci /etc/apache2/.htpasswd Wayang
+a2enmod auth_basic
+a2enmod authn_file
 
 conf="<VirtualHost *:14000 *:14400>
         # The ServerName directive sets the request scheme, hostname and port that
@@ -19,7 +16,14 @@ conf="<VirtualHost *:14000 *:14400>
         ServerAdmin webmaster@localhost
         DocumentRoot /var/www/rjp.baratayuda.abimanyu.f10
 	ServerName rjp.baratayuda.abimanyu.f10.com
-	ServerAlias www.rjp.baratayuda.abimanyu.f10.com	
+	ServerAlias www.rjp.baratayuda.abimanyu.f10.com
+
+	<Directory /var/www/rjp.baratayuda.abimanyu.f10>
+		AuthType Basic
+		AuthName \"Private Area\"
+		AuthUserFile /etc/apache2/.htpasswd
+		Require valid-user
+	</Directory>
 
         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
         # error, crit, alert, emerg.
@@ -41,26 +45,6 @@ conf="<VirtualHost *:14000 *:14400>
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet"
 
 echo "$conf" > /etc/apache2/sites-available/rjp.baratayuda.abimanyu.f10.conf
-
-port="# If you just change the port or add more ports here, you will likely also
-# have to change the VirtualHost statement in
-# /etc/apache2/sites-enabled/000-default.conf
-
-Listen 80
-Listen 14000
-Listen 14400
-
-<IfModule ssl_module>
-        Listen 443
-</IfModule>
-
-<IfModule mod_gnutls.c>
-        Listen 443
-</IfModule>
-
-# vim: syntax=apache ts=4 sw=4 sts=4 sr noet"
-
-echo "$port" > /etc/apache2/ports.conf
 
 a2ensite rjp.baratayuda.abimanyu.f10.conf
 service apache2 restart

@@ -1,12 +1,5 @@
 #!/bin/bash
-cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/rjp.baratayuda.abimanyu.f10.conf
-wget -O '/var/www/rjp.baratayuda.abimanyu.f10.com.zip' 'https://drive.usercontent.google.com/download?id=1pPSP7yIR05JhSFG67RVzgkb-VcW9vQO6'
-unzip /var/www/rjp.baratayuda.abimanyu.f10.com.zip -d /var/www/
-rm -r /var/www/rjp.baratayuda.abimanyu.f10
-mv /var/www/rjp.baratayuda.abimanyu.yyy.com /var/www/rjp.baratayuda.abimanyu.f10
-rm /var/www/rjp.baratayuda.abimanyu.f10.com.zip
-
-conf="<VirtualHost *:14000 *:14400>
+conf="<VirtualHost *:80>
         # The ServerName directive sets the request scheme, hostname and port that
         # the server uses to identify itself. This is used when creating
         # redirection URLs. In the context of virtual hosts, the ServerName
@@ -17,9 +10,24 @@ conf="<VirtualHost *:14000 *:14400>
         #ServerName www.example.com
 
         ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/rjp.baratayuda.abimanyu.f10
-	ServerName rjp.baratayuda.abimanyu.f10.com
-	ServerAlias www.rjp.baratayuda.abimanyu.f10.com	
+        DocumentRoot /var/www/parikesit.abimanyu.f10
+	ServerName parikesit.abimanyu.f10.com
+	ServerAlias www.parikesit.abimanyu.f10.com
+
+	<Directory /var/www/parikesit.abimanyu.f10/public>
+		Options +Indexes
+ 	</Directory>
+
+	<Directory /var/www/parikesit.abimanyu.f10/secret>
+		Options -Indexes
+ 	</Directory>
+
+	<Directory /var/www/parikesit.abimanyu.f10>
+		Options +FollowSymLinks -Multiviews
+		AllowOverride All
+	</Directory>
+
+	Alias \"/js\" \"/var/www/parikesit.abimanyu.f10/public/js\"
 
         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
         # error, crit, alert, emerg.
@@ -29,6 +37,9 @@ conf="<VirtualHost *:14000 *:14400>
 
         ErrorLog \${APACHE_LOG_DIR}/error.log
         CustomLog \${APACHE_LOG_DIR}/access.log combined
+
+	ErrorDocument 403 /error/403.html
+	ErrorDocument 404 /error/404.html
 
         # For most configuration files from conf-available/, which are
         # enabled or disabled at a global level, it is possible to
@@ -40,27 +51,16 @@ conf="<VirtualHost *:14000 *:14400>
 
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet"
 
-echo "$conf" > /etc/apache2/sites-available/rjp.baratayuda.abimanyu.f10.conf
+echo "$conf" > /etc/apache2/sites-available/parikesit.abimanyu.f10.conf
 
-port="# If you just change the port or add more ports here, you will likely also
-# have to change the VirtualHost statement in
-# /etc/apache2/sites-enabled/000-default.conf
+ht='RewriteEngine On
 
-Listen 80
-Listen 14000
-Listen 14400
+RewriteCond %{REQUEST_URI} abimanyu [NC]
+RewriteCond %{REQUEST_URI} \.(jpg|jpeg|png|gif)$ [NC]
+RewriteCond %{REQUEST_URI} !/public/images/abimanyu.png
 
-<IfModule ssl_module>
-        Listen 443
-</IfModule>
+RewriteRule ^(.*)$ /public/images/abimanyu.png [R=301,L]'
 
-<IfModule mod_gnutls.c>
-        Listen 443
-</IfModule>
+echo "$ht" > /var/www/parikesit.abimanyu.f10/.htaccess
 
-# vim: syntax=apache ts=4 sw=4 sts=4 sr noet"
-
-echo "$port" > /etc/apache2/ports.conf
-
-a2ensite rjp.baratayuda.abimanyu.f10.conf
 service apache2 restart

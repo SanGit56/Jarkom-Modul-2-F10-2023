@@ -22,7 +22,7 @@ conf="<VirtualHost *:80>
 		Options -Indexes
  	</Directory>
 
-	Alias "/js" "/var/www/parikesit.abimanyu.f10/public/js"
+	Alias \"/js\" \"/var/www/parikesit.abimanyu.f10/public/js\"
 
         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
         # error, crit, alert, emerg.
