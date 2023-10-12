@@ -1,22 +1,35 @@
+no 2
 ping arjuna.f10.com -c 2
 host -t CNAME www.arjuna.f10.com
 ping www.arjuna.f10.com -c 2
 
+no 3
 ping abimanyu.f10.com -c 2
 host -t CNAME www.abimanyu.f10.com
 ping www.abimanyu.f10.com -c 2
 
+no 4
 host -t A parikesit.abimanyu.f10.com
 ping parikesit.abimanyu.f10.com -c 2
 
+no 5
 host -t PTR 192.226.3.3
 
+no 6
+ping apapun dengan kondisi yudhistira mati
+
+no 7
 ping baratayuda.abimanyu.f10.com -c 2
 host -t CNAME www.baratayuda.abimanyu.f10.com
 ping www.baratayuda.abimanyu.f10.com -c 2
 
+no 8
 ping rjp.baratayuda.abimanyu.f10.com -c 2
 host -t CNAME www.rjp.baratayuda.abimanyu.f10.com
 ping www.rjp.baratayuda.abimanyu.f10.com -c 2
 
+no 9
 nginx -t
+
+no 10~
+?

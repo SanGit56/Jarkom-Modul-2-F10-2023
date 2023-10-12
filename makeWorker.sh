@@ -8,7 +8,7 @@ service php7.0-fpm start
 
 conf='server {
 
-	listen 8001;
+	listen 8002;
 
 	root /var/www/arjuna.f10;
 
