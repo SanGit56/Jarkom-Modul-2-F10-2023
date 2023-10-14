@@ -12,6 +12,7 @@ $TTL	604800
 ;
 @	IN	NS	baratayuda.abimanyu.f10.com.
 @	IN	A	192.226.3.3	; IP AbimanyuWebServer
+www IN  CNAME   baratayuda.abimanyu.f10.com.
 rjp	IN	A	192.226.3.3	; IP AbimanyuWebServer
 www.rjp IN	CNAME	rjp.baratayuda.abimanyu.f10.com.
 @	IN	AAAA	::1'

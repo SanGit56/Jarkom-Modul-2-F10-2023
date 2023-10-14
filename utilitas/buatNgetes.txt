@@ -31,5 +31,5 @@ ping www.rjp.baratayuda.abimanyu.f10.com -c 2
 no 9
 nginx -t
 
-no 10~
-?
+no 10
+lynx arjuna.f10.com

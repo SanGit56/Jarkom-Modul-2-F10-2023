@@ -28,7 +28,25 @@ option="options {
 
 echo "$option" > /etc/bind/named.conf.options
 
-zone="zone \"baratayuda.abimanyu.f10.com\" {
+zone="zone \"arjuna.f10.com\" {
+	type slave;
+    masters { 192.226.2.3; }; // IP YudhistiraDNSMaster
+	file \"/etc/bind/jarkom/arjuna.f10.com\";
+};
+
+zone \"abimanyu.f10.com\" {
+	type slave;
+    masters { 192.226.2.3; }; // IP YudhistiraDNSMaster
+	file \"/etc/bind/jarkom/abimanyu.f10.com\";
+};
+
+zone \"3.226.192.in-addr.arpa\" {
+	type slave;
+    masters { 192.226.2.3; }; // IP YudhistiraDNSMaster
+	file \"/etc/bind/jarkom/3.226.192.in-addr.arpa\";
+};
+
+zone \"baratayuda.abimanyu.f10.com\" {
     type master;
     file \"/etc/bind/delegasi/baratayuda.abimanyu.f10.com\";
 };"

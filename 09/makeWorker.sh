@@ -1,7 +1,7 @@
 apt-get update && apt install nginx php php-fpm -y
 wget -O '/var/www/arjuna.f10.com.zip' 'https://drive.usercontent.google.com/download?id=17tAM_XDKYWDvF-JJix1x7txvTBEax7vX'
 unzip /var/www/arjuna.f10.com.zip -d /var/www/
-mv /var/www/arjuna.f10.com /var/www/arjuna.f10
+mv /var/www/arjuna.yyy.com /var/www/arjuna.f10
 rm /var/www/arjuna.f10.com.zip
 
 service php7.0-fpm start
