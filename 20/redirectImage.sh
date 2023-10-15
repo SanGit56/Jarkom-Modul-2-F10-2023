@@ -63,4 +63,5 @@ RewriteRule ^(.*)$ /public/images/abimanyu.png [R=301,L]'
 
 echo "$ht" > /var/www/parikesit.abimanyu.f10/.htaccess
 
+a2enmod rewrite
 service apache2 restart
