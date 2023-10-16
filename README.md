@@ -6,6 +6,122 @@ NRP anggota 1: 5025211166 <br />
 Nama anggota 2: Thoriq Afif Habibi <br />
 NRP anggota 2: 5025211154 <br />
 
+## 1. Buat topologi jaringan
+Topologi 7 adalah topologi yang digunakan kelompok kami, kelompok F10<br />
+![Topologi 7](tangkaplayar/1.png)
+
+## 2. Buat website utama dengan akses ke arjuna.f10.com dengan alias www.arjuna.f10.com
+_Script_ yang digunakan adalah makeArjuna.sh yang dijalankan di node YudhistiraDNSMaster dan melakukan perintah:
+1. Menambahkan domain **arjuna.f10.com** di **/etc/bind/named.conf.local**
+2. Pada file domain **arjuna.f10.com** mengarahkan alamat IP-nya ke _node_ **ArjunaLoadBalancer**
+3. Menambahkan _record_ CNAME untuk membuat alias website<br />
+
+Perintah yang digunakan dalam pengetesan adalah:<br />
+1. ping arjuna.f10.com -c 2
+2. host -t CNAME www.arjuna.f10.com
+3. ping www.arjuna.f10.com -c 2<br />
+
+![tes arjuna.f10.com](tangkaplayar/2.png)
+
+## 3. Buat website utama dengan akses ke abimanyu.f10.com dengan alias www.abimanyu.f10.com
+_Script_ yang digunakan adalah makeAbimanyu.sh yang dijalankan di node YudhistiraDNSMaster dan melakukan perintah:
+1. Menambahkan domain **abimanyu.f10.com** di **/etc/bind/named.conf.local**
+2. Pada file domain **abimanyu.f10.com** mengarahkan alamat IP-nya ke _node_ **AbimanyuWebServer**
+3. Menambahkan _record_ CNAME untuk membuat alias website<br />
+
+Perintah yang digunakan dalam pengetesan adalah:<br />
+1. ping abimanyu.f10.com -c 2
+2. host -t CNAME www.abimanyu.f10.com
+3. ping www.abimanyu.f10.com -c 2<br />
+
+![tes abimanyu.f10.com](tangkaplayar/3.png)
+
+## 4. Buat subdomain parikesit.abimanyu.f10.com yang mengarah ke AbimanyuWebServer
+_Script_ yang digunakan adalah makeParikesit.sh yang dijalankan di node YudhistiraDNSMaster dan melakukan perintah:
+1. Pada file domain **abimanyu.f10.com** menambahkan _record_ A untuk membuat subdomain suatu _website_<br />
+
+Perintah yang digunakan dalam pengetesan adalah:<br />
+1. host -t A parikesit.abimanyu.f10.com
+2. ping parikesit.abimanyu.f10.com -c 2<br />
+
+![tes parikesit.abimanyu.f10.com](tangkaplayar/4.png)
+
+## 5. Buat reverse domain untuk domain abimanyu.f10.com
+_Script_ yang digunakan adalah makeReverse.sh yang dijalankan di node YudhistiraDNSMaster dan melakukan perintah:
+1. Menambahkan domain reverse **3.226.192.in-addr.arpa** di **/etc/bind/named.conf.local**
+2. Pada file domain **3.226.192.in-addr.arpa** membuat _nameserver_ dan mengarahkan ke **abimanyu.f10.com**<br />
+
+Perintah yang digunakan dalam pengetesan adalah:<br />
+1. host -t PTR 192.226.3.3<br />
+
+![tes Reverse DNS abimanyu.f10.com](tangkaplayar/5.png)
+
+## 6. Buat Werkudara sebagai DNS Slave dari DNS Master Yudhistira
+_Script_ yang digunakan adalah makeMaster.sh yang dijalankan di node YudhistiraDNSMaster dan melakukan perintah:
+1. Di **/etc/bind/named.conf.local** menambahkan baris `also-notify` dan `allow-transfer` yang mengarah ke IP WerkudaraDNSSlave pada tiap domain yang terdaftar termasuk reverse DNS<br />
+_Script_ yang digunakan adalah makeSlave.sh yang dijalankan di node WerkudaraDNSSlave dan melakukan perintah:
+2. Di **/etc/bind/named.conf.local** menambahkan baris `masters` yang mengarah ke IP YudhistiraDNSMaster pada tiap domain yang terdaftar termasuk reverse DNS<br />
+
+Langkah yang digunakan dalam pengetesan adalah:<br />
+1. Matikan _node_ YudhistiraDNSMaster
+2. Jalankan perintah apapun (contoh: ping arjuna.f10.com -c 2)<br />
+
+![tes DNS Slave](tangkaplayar/6.png)
+
+## 7. Buat subdomain baratayuda.abimanyu.f10.com dengan alias www.baratayuda.abimanyu.f10.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda
+_Script_ yang digunakan adalah makeDelegator.sh yang dijalankan di node YudhistiraDNSMaster dan melakukan perintah:
+1. Di **abimanyu.f10.com** menambahkan _record_ A dengan _root_ **ns1** dan _record_ NS dengan _root_ **baratayuda**
+2. Menutup kode `dnssec-validation auto;` dan menambahkan kode `allow-query{any;};` di file **/etc/bind/named.conf.options**<br />
+
+_Script_ yang digunakan adalah makeDelegate.sh yang dijalankan di node WerkudaraDNSSlave dan melakukan perintah:
+1. Menutup kode `dnssec-validation auto;` dan menambahkan kode `allow-query{any;};` di file **/etc/bind/named.conf.options**
+2. Menambahkan domain **baratayuda.abimanyu.f10.com** di **/etc/bind/named.conf.local**
+3. Menambahkan _record_ CNAME untuk membuat alias website<br />
+
+Perintah yang digunakan dalam pengetesan adalah:<br />
+1. ping baratayuda.abimanyu.f10.com -c 2
+2. host -t CNAME www.baratayuda.abimanyu.f10.com
+3. ping www.baratayuda.abimanyu.f10.com -c 2<br />
+
+![tes baratayuda.abimanyu.f10.com](tangkaplayar/7.png)
+
+## 8. Buat subdomain rjp.baratayuda.abimanyu.yyy.com melalui Werkudara dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu
+_Script_ yang digunakan adalah makeRjp.sh yang dijalankan di node WerkudaraDNSSlave dan melakukan perintah:
+1. Pada file domain **baratayuda.abimanyu.f10.com** menambahkan _record_ A untuk membuat subdomain suatu _website_
+2. Menambahkan _record_ CNAME untuk membuat alias website<br />
+
+Perintah yang digunakan dalam pengetesan adalah:<br />
+1. ping rjp.baratayuda.abimanyu.f10.com -c 2
+2. ping www.rjp.baratayuda.abimanyu.f10.com -c 2<br />
+
+![tes rjp.baratayuda.abimanyu.f10.com](tangkaplayar/8.png)
+
+## 9. Setel Load Balancer Nginx Arjuna dengan tiga worker yaitu Prabakusuma, Abimanyu, dan Wisanggeni (yang juga menggunakan nginx sebagai webserver)
+Pada tiap worker menggunakan _script_ makeWorker.sh yang melakukan perintah:
+1. Instalasi nginx dan PHP
+2. Unduh dan proses file _resource_ untuk _worker_
+3. Sesuaikan dari _port_ mana worker tersebut berjalan pada baris `listen 800x;`<br />
+
+Perintah yang digunakan dalam pengetesan adalah:<br />
+1. nginx -t<br />
+
+![tes nginx Load Balancer](tangkaplayar/9a.png)
+![tes nginx Worker](tangkaplayar/9b.png)
+
+## 10. Gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Kmudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak
+_Script_ yang digunakan adalah makeLB.sh yang dijalankan di node ArjunaLoadBalancer dan melakukan perintah:
+1. Pada file **/etc/nginx/sites-available/lb-arjuna** menyetel bahwa algoritma penyeimbang beban yang digunakan adalah Round Robin, sesuai worker yang ada
+```
+upstream myweb  {
+    server 192.226.3.2:8001; #IP PrabukusumaWebServer
+    server 192.226.3.3:8002; #IP AbimanyuWebServer
+    server 192.226.3.4:8003; #IP WisanggeniWebServer
+}
+```
+Perintah yang digunakan dalam pengetesan adalah:<br />
+1. lynx arjuna.f10.com
+![tes worker load balancer](tangkaplayar/10.png)
+
 ## 11. Konfigurasi web www.abimanyu.f10.com dengan Apache Web Server dan DocumentRoot di /var/www/abimanyu.f10
 Konfigurasi www.abimanyu.f10.com menggunakan skrip abimanyuConf.sh dengan langkah-langkah berikut:
 1. Menyalin konfigurasi default apache (file 000-default.conf) pada folder "/etc/apache2/sites-available" dengan nama file "abimanyu.f10.conf" ke folder yang sama dengan command `cp`
